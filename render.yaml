@@ -1,0 +1,34 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: sentinelai-backend
+    env: docker
+    dockerContext: backend
+    dockerfilePath: Dockerfile
+    plan: free
+    region: singapore # Matches user screenshot
+    healthCheckPath: /metrics
+    envVars:
+      - key: PORT
+        value: 8000
+
+  # Frontend Static Site
+  - type: web
+    name: sentinelai-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    publishPath: frontend/dist
+    plan: free
+    region: singapore
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: sentinelai-backend
+          type: web
+          property: host
+    staticPublishPath: frontend/dist
+    # Routes for SPA
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

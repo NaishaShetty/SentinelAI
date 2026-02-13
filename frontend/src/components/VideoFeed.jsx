@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User, Activity, AlertCircle, Box, Clock } from "lucide-react";
+import { getApiUrl } from "../api";
 
 export default function VideoFeed({ onData }) {
     const [data, setData] = useState([]);
@@ -9,7 +10,8 @@ export default function VideoFeed({ onData }) {
     useEffect(() => {
         const id = setInterval(async () => {
             try {
-                const res = await fetch("http://localhost:8000/stream");
+                const res = await fetch(getApiUrl("/stream"));
+
                 const envelope = await res.json();
                 const json = envelope.data || [];
 

@@ -4,6 +4,7 @@ import RiskChart from "./components/RiskChart";
 import Metrics from "./components/Metrics";
 import SystemOverview from "./components/SystemOverview";
 import { Shield, Activity, BarChart3, Database, Cpu, RefreshCw, Play, Pause, History, Lock, Eye, AlertTriangle, TrendingUp } from "lucide-react";
+import { getApiUrl } from "./api";
 
 export default function App() {
     const [data, setData] = useState([]);
@@ -31,7 +32,7 @@ export default function App() {
 
     useEffect(() => {
         const fetchMetrics = () => {
-            fetch("http://localhost:8000/metrics").then(r => r.json()).then(setSysMetrics);
+            fetch(getApiUrl("/metrics")).then(r => r.json()).then(setSysMetrics);
         }
         const mTimer = setInterval(fetchMetrics, 5000);
         return () => clearInterval(mTimer);
@@ -39,34 +40,34 @@ export default function App() {
 
     useEffect(() => {
         if (activeTab === 'audit') {
-            fetch("http://localhost:8000/audit").then(r => r.json()).then(setAuditLogs);
+            fetch(getApiUrl("/audit")).then(r => r.json()).then(setAuditLogs);
         }
     }, [activeTab]);
 
     const handlePosture = async (val) => {
         setPosture(val);
-        await fetch(`http://localhost:8000/control/posture?value=${val}`, { method: 'POST' });
+        await fetch(getApiUrl(`/control/posture?value=${val}`), { method: 'POST' });
     };
 
     const handlePause = async () => {
         const nextState = !isPaused;
-        await fetch(`http://localhost:8000/control/pause?paused=${nextState}`, { method: 'POST' });
+        await fetch(getApiUrl(`/control/pause?paused=${nextState}`), { method: 'POST' });
         setIsPaused(nextState);
     };
 
     const handleReset = async () => {
-        await fetch(`http://localhost:8000/control/reset`, { method: 'POST' });
+        await fetch(getApiUrl(`/control/reset`), { method: 'POST' });
     };
 
     const handleSensitivity = async (e) => {
         const val = parseFloat(e.target.value);
         setSensitivity(val);
-        await fetch(`http://localhost:8000/control/sensitivity?value=${val}`, { method: 'POST' });
+        await fetch(getApiUrl(`/control/sensitivity?value=${val}`), { method: 'POST' });
     };
 
     const handleScenario = async (slug) => {
         setActiveScenario(slug);
-        await fetch(`http://localhost:8000/control/scenario?slug=${slug}`, { method: 'POST' });
+        await fetch(getApiUrl(`/control/scenario?slug=${slug}`), { method: 'POST' });
     };
 
     const formatUptime = (s) => {
@@ -206,11 +207,11 @@ export default function App() {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <button className="verified-btn" onClick={async () => {
-                                    await fetch(`http://localhost:8000/control/verify?log_id=${log.id}&correct=true`, { method: 'POST' });
+                                    await fetch(getApiUrl(`/control/verify?log_id=${log.id}&correct=true`), { method: 'POST' });
                                     setAuditLogs(prev => prev.filter(l => l.id !== log.id));
                                 }}>VERIFY</button>
                                 <button className="verified-btn" onClick={async () => {
-                                    await fetch(`http://localhost:8000/control/verify?log_id=${log.id}&correct=false`, { method: 'POST' });
+                                    await fetch(getApiUrl(`/control/verify?log_id=${log.id}&correct=false`), { method: 'POST' });
                                     setAuditLogs(prev => prev.filter(l => l.id !== log.id));
                                 }}>DISMISS</button>
                             </div>

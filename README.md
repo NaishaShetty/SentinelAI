@@ -49,21 +49,20 @@ Abstention is a **feature**, not a failure.
 
 ## 🏗️ System Architecture
 
-Camera / Stream
-↓
-Vision Inference (YOLOv8)
-↓
-Multi-Object Tracking
-↓
-Risk Signal Extraction
-↓
-Temporal Risk Memory (with decay)
-↓
-Decision Logic (Proceed / Warn / Abstain)
-↓
-Monitoring Dashboard
+```markdown
+```mermaid
+flowchart LR
+    A[📷 Camera / Stream] --> B[🧠 Vision Inference<br/>(YOLOv8)]
+    B --> C[🔍 Multi-Object Tracking]
+    C --> D[⚠️ Risk Signal Extraction]
+    D --> E[🕒 Temporal Risk Memory<br/>(Decay)]
+    E --> F{🛑 Decision Logic}
+    F -->|Proceed| G[📊 Dashboard]
+    F -->|Warn| G
+    F -->|Abstain| H[👤 Human Review]
 
 
+```
 The system is **stateful**, explainable, and designed for human-in-the-loop deployment.
 
 ---
